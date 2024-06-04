@@ -1,14 +1,21 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-const Button = ({ text, onPress, backgroundColor, color }) => {
+const Button = ({ text, destination, backgroundColor, color }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate(destination);
+  };
+
   return (
-    <TouchableOpacity
+    <Pressable
       style={[styles.button, { backgroundColor }]}
-      onPress={onPress}
+      onPress={handlePress}
     >
       <Text style={[styles.buttonText, { color }]}>{text}</Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
