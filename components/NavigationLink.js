@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Pressable, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const NavigationButton = ({ title, destination }) => {
+const NavigationLink = ({ title, destination }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
@@ -10,21 +10,21 @@ const NavigationButton = ({ title, destination }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
+    <Pressable style={styles.link} onPress={handlePress}>
+      <Text style={styles.linkText}>{title}</Text>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
+  link: {
     backgroundColor: 'transparent', // Fondo transparente para que se comporte como un enlace
     padding: 10,
   },
-  buttonText: {
+  linkText: {
     color: 'blue', // Color del texto del enlace
     textDecorationLine: 'underline', // Subrayado del texto del enlace
   },
 });
 
-export default NavigationButton;
+export default NavigationLink;
