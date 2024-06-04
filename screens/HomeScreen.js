@@ -1,17 +1,16 @@
-// screens/HomeScreen.js
+import React from 'react'
+import Layout from '../components/Layout'
+import { View, Text } from 'react-native-web'
+// import locations from '../components/locations';
 
-import * as React from 'react';
-import { Button, View } from 'react-native';
-
-const HomeScreen = ({ navigation }) => {
+export default function Home() {
   return (
-    <View>
-      <Button
-        title="Go to Jane's profile"
-        onPress={() => navigation.navigate('ProfileScreen', { name: 'Jane' })}
-      />
-    </View>
-  );
-};
+    <Layout>
+      <View>
+        <Text>Parkings</Text>
+      </View>
+      {/* <locations /> */}
+    </Layout>
+  )
+}
 
-export default HomeScreen;

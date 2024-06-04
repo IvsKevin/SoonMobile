@@ -6,9 +6,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import HorizontalLine from '../components/HorizontalLine';
-import NavigationButton from '../components/NavigationButton';
+// import NavigationButton from '../components/NavigationButton';
 
-export default function RegisterScreen() {
+export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -57,3 +57,4 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   }
 });
+
