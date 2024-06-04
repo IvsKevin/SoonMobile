@@ -1,22 +1,23 @@
-// En tu archivo index.js (o donde defines tus rutas)
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+// Imports default
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+// Screens
 import HomeScreen from '../screens/HomeScreen'; 
 import ProfileScreen from '../screens/ProfileScreen'; 
 import RegisterScreen from '../screens/RegisterScreen';
 
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const AppNavigator = () => {
+export default function RegisterStack() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+      />
+    </Stack.Navigator>
   );
 };
 
-export default AppNavigator;
