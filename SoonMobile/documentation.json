@@ -1,0 +1,17 @@
+{
+    "TanStack": {
+        "version": "",
+        "description": "Nos permite gestionar los estados del servidor: errores, cargas, completados y pendientes.",
+        "uri": "https://tanstack.com/"
+    },
+    "Redux ToolKit": {
+        "version": "",
+        "description": "Un kit de herramientas para Redux, que proporciona herramientas comunes para reducers y actions.",
+        "uri": "https://redux-toolkit.js.org/"
+    },
+    "React-native-async-storage": {
+        "version": "",
+        "description": "Permite almacenar y recuperar datos asíncronamente en el dispositivo móvil.",
+        "uri": "https://www.npmjs.com/package/@react-native-async-storage/async-storage"
+    }
+}
