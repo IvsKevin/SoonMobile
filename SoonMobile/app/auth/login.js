@@ -2,8 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { TextInput } from 'react-native-web'
+import { ActivityIndicator, TextInput } from 'react-native-web'
 import { useRouter } from 'expo-router'
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "../(services)/api/api";
 
 //Schema
 const validationSchema = Yup.object({
@@ -19,15 +21,41 @@ const validationSchema = Yup.object({
 
 const Login = () => {
     const router = useRouter();
+    const mutation = useMutation({
+        mutationFn: loginUser,
+        mutationKey: ['login']
+    })
+    console.log("mutation ", mutation);
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Login</Text>
+            {/* Display messages */}
+            {mutation?.isError && <Text style={styles.errorText}>
+                {mutation?.error?.response?.data?.message}
+            </Text>}
+            {mutation?.isSuccess && <Text style={styles.successText}>
+                Logueado correctamente
+            </Text>}
             {/* Formik Configuration */}
             <Formik
                 initialValues={{ email: "emma@gmail.com", password: "emma123" }}
                 onSubmit={(values) => {
                     console.log(values)
-                    router.push("/(tabs)")
+                    // Calling mutation
+                    mutation
+                        .mutateAsync(values)
+                        .then((data) => {
+                            // Calling mutation
+                            mutation.mutateAsync(values).then((data) => {
+                                console.log(data);
+                            }).catch((error) => {
+                                console.log(error);
+                            })
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+                    // router.push("/(tabs)")
                 }}
                 validationSchema={validationSchema}
             >
@@ -57,7 +85,9 @@ const Login = () => {
                             <Text style={styles.errorText}>{errors.password}</Text>
                         ) : null}
                         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                            <Text style={styles.buttonText}>Login</Text>
+                            {mutation?.isPending ? (<ActivityIndicator color="#fff" />) : (
+                                <Text style={styles.buttonText}>Login</Text>
+                            )}
                         </TouchableOpacity>
                     </View>
                 )}
@@ -109,5 +139,9 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 18,
         fontWeight: "bold",
+    },
+    successText: {
+        color: "green",
+        marginBottom: 16,
     },
 });
