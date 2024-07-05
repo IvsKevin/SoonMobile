@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SoonMobile",
-    "slug": "SoonMobile",
+    "name": "Soon",
+    "slug": "Soon",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
