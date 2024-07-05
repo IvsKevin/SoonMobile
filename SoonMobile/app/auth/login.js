@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { ActivityIndicator, TextInput } from 'react-native-web'
+import { ActivityIndicator, TextInput } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../(services)/api/api";
