@@ -1,0 +1,7 @@
+{
+    "localtunnel": {
+        "version": "",
+        "description": "Nos permite hacer un tunel entre el servidor local y un endpoint del servidor",
+        "uri": "https://github.com/localtunnel/localtunnel"
+    }
+}
