@@ -1,11 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native'
 import React from 'react'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { ActivityIndicator, TextInput } from 'react-native'
 import { useRouter } from 'expo-router'
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../(services)/api/api";
+import { loginUserAction } from '../(redux)/authSlice'
+import { useDispatch, useSelector } from "react-redux";
 
 //Schema
 const validationSchema = Yup.object({
@@ -21,10 +22,13 @@ const validationSchema = Yup.object({
 
 const Login = () => {
     const router = useRouter();
+    const dispatch = useDispatch(); // Use dispatch
     const mutation = useMutation({
         mutationFn: loginUser,
         mutationKey: ['login']
     })
+
+    useSelector((state) => console.log("Store data", state));
     console.log("mutation ", mutation);
     return (
         <View style={styles.container}>
@@ -46,16 +50,19 @@ const Login = () => {
                         .mutateAsync(values)
                         .then((data) => {
                             // Calling mutation
-                            mutation.mutateAsync(values).then((data) => {
-                                console.log(data);
-                            }).catch((error) => {
-                                console.log(error);
-                            })
+                            // mutation.mutateAsync(values).then((data) => {
+                            console.log("Data ", data);
+                            // }).catch((error) => {
+                            //     console.log(error);
+                            // })
+
+                            // Dispatch
+                            dispatch(loginUserAction(data));
+                            router.push("/(tabs)")
                         })
                         .catch((err) => {
-                            console.log(err);
+                            console.log("Error200: ", err);
                         });
-                    // router.push("/(tabs)")
                 }}
                 validationSchema={validationSchema}
             >
