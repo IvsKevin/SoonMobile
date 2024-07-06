@@ -1,31 +1,30 @@
 import axios from "axios";
 
 // Create a function to return a promise
+const api = "https://heavy-beans-learn.loca.lt";
 
-// Login
-const loginUser = async ({email, password}) => {
+export const registerUser = async (user) => {
+    console.log(user);
     const response = await axios.post(
-        "https://cruel-badgers-return.loca.lt/api/users/login",
+        api + "/api/users/register",
+        user,
         {
-            email,
-            password,
+            headers: {
+                "Content-Type": "application/json",
+            },
         }
     );
-    // Returning a promise
     return response.data;
-}
-
-// Register
-const registerUser = async ({email, password}) => {
+};
+export const loginUser = async (user) => {
     const response = await axios.post(
-        "https://cruel-badgers-return.loca.lt/api/users/register",
+        api + "/api/users/login",
+        user,
         {
-            email,
-            password,
+            headers: {
+                "Content-Type": "application/json",
+            },
         }
     );
-    // Returning a promise
     return response.data;
-}
-
-export { loginUser, registerUser };
+};

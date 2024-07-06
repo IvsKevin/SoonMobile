@@ -1,3 +1,4 @@
+import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Function to get the user from AsyncStorage
@@ -13,6 +14,7 @@ const loadUserFromStorage = async () => {
 // Initial state
 const initialState = {
     user: null,
+    isLoading: true,
 };
 
 
@@ -23,14 +25,17 @@ const authSlice = createSlice({
     reducers: {
         loginUserAction: (state, action) => {
             state.user = action.payload;
+            state.isLoading = false;
             AsyncStorage.setItem("userInfo", JSON.stringify(action.payload));
         },
         logoutAction: (state, action) => {
+            state.isLoading = false;  // Reset isLoading state after logout action to false
             state.user = null;
             AsyncStorage.removeItem("userInfo");
         },
         setUserAction: (state, action) => {
             state.user = action.payload;
+            state.isLoading = false;
         }
     }
 });
@@ -38,7 +43,7 @@ const authSlice = createSlice({
 // Generate actions
 export const { loginUserAction, logoutAction, setUserAction } = authSlice.actions;
 // Generate reducer
-export const authReducer = authSlice.reducers;
+export const authReducer = authSlice.reducer;
 // Load user
 export const loadUser = () => async (dispatch) => {
     const userInfo = await loadUserFromStorage();
