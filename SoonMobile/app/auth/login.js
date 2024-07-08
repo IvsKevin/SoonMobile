@@ -11,12 +11,12 @@ import { useDispatch, useSelector } from "react-redux";
 //Schema
 const validationSchema = Yup.object({
     email: Yup.string()
-        .email('Invalid email address')
-        .required('Email is required')
+        .email('Correo electrónico inválido')
+        .required('El correo electrónico es requerido')
         .label("Email"),
     password: Yup.string()
-        .min(6, 'Password must be at least 6 characters')
-        .required('Password is required')
+        .min(6, 'La contraseña debe contener al menos 6 carácteres')
+        .required('La contraseña es requerida')
         .label("Password"),
 })
 
@@ -32,7 +32,7 @@ const Login = () => {
     console.log("mutation ", mutation);
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>Iniciar sesión</Text>
             {/* Display messages */}
             {mutation?.isError && <Text style={styles.errorText}>
                 {mutation?.error?.response?.data?.message}
@@ -58,7 +58,7 @@ const Login = () => {
 
                             // Dispatch
                             dispatch(loginUserAction(data));
-                            router.push("/(tabs)")
+                            router.push("/(tabs)")  
                         })
                         .catch((err) => {
                             console.log("Error200: ", err);
@@ -93,9 +93,18 @@ const Login = () => {
                         ) : null}
                         <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                             {mutation?.isPending ? (<ActivityIndicator color="#fff" />) : (
-                                <Text style={styles.buttonText}>Login</Text>
+                                <Text style={styles.buttonText}>Iniciar sesión</Text>
                             )}
                         </TouchableOpacity>
+                        <View style={styles.linkContainer}>
+                            <Text>¿Aún no tienes cuenta?</Text>
+                            <TouchableOpacity
+                                style={styles.link}
+                                onPress={() => router.push("/auth/register")}
+                            >
+                                <Text style={styles.linkText}>Regístrate</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 )}
             </Formik>
@@ -151,4 +160,16 @@ const styles = StyleSheet.create({
         color: "green",
         marginBottom: 16,
     },
+    linkContainer: {
+        marginTop: 16,
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    linkText: {
+        color: "#6200ea",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginLeft: 8,
+    }
 });

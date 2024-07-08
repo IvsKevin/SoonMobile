@@ -22,21 +22,14 @@ const Home = () => {
             />
             {/* Overlay with text and buttons */}
             <View style={styles.overlay}>
-                <Text style={styles.mainText}>Welcome to Soon Mobile!</Text>
-                <Text style={styles.subText}>Experience the future of mobile apps.</Text>
-                <Text style={styles.subText}>Build your perfect system.</Text>
+                <Text style={styles.mainText}>Bienvenido a Soon</Text>
+                <Text style={styles.subText}>El mejor sistema de transportes de México</Text>
                 <View style={styles.buttons}>
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => router.push("/auth/login")}
                     >
-                        <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => router.push("/auth/register")}
-                    >
-                        <Text style={styles.buttonText}>Register</Text>
+                        <Text style={styles.buttonText}>Comenzar</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -65,17 +58,18 @@ const styles = StyleSheet.create({
     },
     mainText: {
         color: "white",
-        fontSize: 68,
+        fontSize: 38,
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 20,
     },
     subText: {
         color: "white",
-        fontSize: 24,
+        fontSize: 16,
         fontWeight: "bold",
         textAlign: "center",
         marginBottom: 5,
+        marginHorizontal: 20,
     },
     buttons: {
         flexDirection: "row",

@@ -10,13 +10,13 @@ const userCtrl = {
     console.log({ email, password });
     //!Validations
     if (!email || !password) {
-      throw new Error("Please all fields are required");
+      throw new Error("Por favor, llena todos los espacios");
     }
     //! check if user already exists
     const userExits = await User.findOne({ email });
     // console.log("userExits", userExits);
     if (userExits) {
-      throw new Error("User already exists");
+      throw new Error("El usuario ya existe");
     }
     //! Hash the user password
     const salt = await bcrypt.genSalt(10);
@@ -41,12 +41,12 @@ const userCtrl = {
     const user = await User.findOne({ email });
     console.log("user backend", user);
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new Error("Credenciales invalidas");
     }
     //!Check if user password is valid
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error("Invalid credentials");
+      throw new Error("Credenciales invalidas");
     }
     //! Generate the token
     const token = jwt.sign({ id: user._id }, "anyKey", { expiresIn: "30d" });
