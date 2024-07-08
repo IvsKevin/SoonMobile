@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Create a function to return a promise
-const api = "https://heavy-beans-learn.loca.lt";
+const api = "https://cold-bats-beg.loca.lt";
 
 export const registerUser = async (user) => {
     console.log(user);
