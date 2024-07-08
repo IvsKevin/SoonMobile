@@ -3,8 +3,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import ProtectRoute from "../../components/ProtectRoute";
 
 export default function RootLayout() {
-    return(
-        <ProtectRoute>
+    return (
+        <ProtectRoute >
             <Tabs>
                 <Tabs.Screen
                     name="index"
@@ -38,7 +38,6 @@ export default function RootLayout() {
                         )
                     }}
                 />
-
             </Tabs >
         </ProtectRoute>
     );
