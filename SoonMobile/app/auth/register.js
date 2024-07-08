@@ -35,7 +35,7 @@ export default function Register() {
   console.log(mutation);
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+      <Text style={styles.title}>Registro</Text>
       {mutation?.isError ? (
         <Text style={styles.errorText}>
           {mutation?.error?.response?.data?.message}
@@ -124,12 +124,21 @@ export default function Register() {
               {mutation.isPending ? (
                 <ActivityIndicator color="#fff" />
               ) : (
-                <Text style={styles.buttonText}>Register</Text>
+                <Text style={styles.buttonText}>Registrarme</Text>
               )}
             </TouchableOpacity>
           </View>
         )}
       </Formik>
+      <View style={styles.linkContainer}>
+        <Text>¿Ya tienes cuenta?</Text>
+        <TouchableOpacity
+          style={styles.link}
+          onPress={() => router.push("/auth/login")}
+        >
+          <Text style={styles.linkText}>¡Inicia sesión!</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -183,5 +192,17 @@ const styles = StyleSheet.create({
   successText: {
     color: "green",
     marginBottom: 16,
-},
+  },
+  linkContainer: {
+    marginTop: 16,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  linkText: {
+    color: "#6200ea",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginLeft: 8,
+  }
 });

@@ -4,7 +4,7 @@ import React from 'react'
 const TabHome = () => {
   return (
     <View>
-      <Text>TabHome</Text>
+      <Text>Pestaña de inicio</Text>
     </View>
   )
 }
