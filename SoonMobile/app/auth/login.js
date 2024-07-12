@@ -49,13 +49,7 @@ const Login = () => {
                     mutation
                         .mutateAsync(values)
                         .then((data) => {
-                            // Calling mutation
-                            // mutation.mutateAsync(values).then((data) => {
                             console.log("Data ", data);
-                            // }).catch((error) => {
-                            //     console.log(error);
-                            // })
-
                             // Dispatch
                             dispatch(loginUserAction(data));
                             router.push("/(tabs)")  
@@ -68,6 +62,7 @@ const Login = () => {
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                     <View style={styles.form}>
+                        <Text style={styles.label}>Email</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Email"
@@ -80,6 +75,7 @@ const Login = () => {
                         {errors.email && touched.email ? (
                             <Text style={styles.errorText}>{errors.email}</Text>
                         ) : null}
+                        <Text style={styles.label} >Password</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Password"
@@ -129,6 +125,11 @@ const styles = StyleSheet.create({
     },
     form: {
         width: "100%",
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 8,
     },
     input: {
         height: 50,
