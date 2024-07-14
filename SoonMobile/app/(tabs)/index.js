@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import * as React from 'react';
+import * as Location from "expo-location";
 import MapView, { Marker, Polyline } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import { GOOGLE_MAPS_KEY } from "@env";
@@ -15,6 +16,27 @@ const TabHome = () => {
     latitude: 32.460949,
     longitude: -116.8273082,
   });
+
+  // Podriamos usar un useEffect que ejecute este codigo cada cierto tiempo.
+  React.useEffect(() => {
+    getLocationPermission();
+  }, []);
+
+  async function getLocationPermission() {
+    const { status } = await Location.requestForegroundPermissionsAsync({
+      permissions: [{ name: "location" }],
+    });
+    if (status !== "granted") {
+      alert("Permisos de ubicación rechazados.");
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    setOrigin({
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+    });
+  }
 
   return (
     <View style={styles.container}>
@@ -87,7 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     margin: 10,
-    padding: 10,
+    padding: 5,
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 2,

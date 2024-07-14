@@ -83,6 +83,7 @@ export default function Register() {
           touched,
         }) => (
           <View style={styles.form}>
+            <Text>Ingresa tu correo electrónico</Text>
             <TextInput
               style={styles.input}
               placeholder="Email"
@@ -94,6 +95,7 @@ export default function Register() {
             {errors.email && touched.email ? (
               <Text style={styles.errorText}>{errors.email}</Text>
             ) : null}
+            <Text>Ingresa tu contraseña</Text>
             <TextInput
               style={styles.input}
               placeholder="Password"
@@ -105,6 +107,7 @@ export default function Register() {
             {errors.password && touched.password ? (
               <Text style={styles.errorText}>{errors.password}</Text>
             ) : null}
+            <Text>Confirma tu contraseña</Text>
             <TextInput
               style={styles.input}
               placeholder="Confirm Password"

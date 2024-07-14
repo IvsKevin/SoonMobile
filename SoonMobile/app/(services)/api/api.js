@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Create a function to return a promise
-const api = "https://empty-seas-hunt.loca.lt";
+const api = " https://spotty-lies-know.loca.lt";
 
 export const registerUser = async (user) => {
     console.log(user);

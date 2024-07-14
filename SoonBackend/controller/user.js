@@ -16,7 +16,7 @@ const userCtrl = {
     const userExits = await User.findOne({ email });
     // console.log("userExits", userExits);
     if (userExits) {
-      throw new Error("El usuario ya existe");
+      throw new Error("Ya existe una cuenta vinculada a este correo");
     }
     //! Hash the user password
     const salt = await bcrypt.genSalt(10);
@@ -41,12 +41,12 @@ const userCtrl = {
     const user = await User.findOne({ email });
     console.log("user backend", user);
     if (!user) {
-      throw new Error("Credenciales invalidas");
+      throw new Error("Credenciales inválidas");
     }
     //!Check if user password is valid
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      throw new Error("Credenciales invalidas");
+      throw new Error("Credenciales inválidas");
     }
     //! Generate the token
     const token = jwt.sign({ id: user._id }, "anyKey", { expiresIn: "30d" });

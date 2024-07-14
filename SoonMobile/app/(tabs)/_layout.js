@@ -7,10 +7,10 @@ export default function RootLayout() {
         <ProtectRoute >
             <Tabs>
                 <Tabs.Screen
-                    name="index"
+                    name="lines"
                     options={{
-                        headerShown: false, title: "Inicio", tabBarIcon: ({ color }) => (
-                            <FontAwesome name="home" size={24} color={color} />
+                        headerShown: false, title: "Lineas", tabBarIcon: ({ color }) => (
+                            <FontAwesome name="map" size={20} color={color} />
                         )
                     }}
                 />
@@ -18,7 +18,15 @@ export default function RootLayout() {
                     name="stations"
                     options={{
                         headerShown: false, title: "Estaciones", tabBarIcon: ({ color }) => (
-                            <FontAwesome name="truck" size={24} color={color} />
+                            <FontAwesome name="bus" size={20} color={color} />
+                        )
+                    }}
+                />
+                <Tabs.Screen
+                    name="index"
+                    options={{
+                        headerShown: false, title: "Inicio", tabBarIcon: ({ color }) => (
+                            <FontAwesome name="home" size={24} color={color} />
                         )
                     }}
                 />
