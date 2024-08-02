@@ -2,6 +2,10 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Video, ResizeMode } from 'expo-av';
 import { useRouter } from "expo-router";
+import { Asset } from 'expo-asset';
+
+// Asegúrate de que el archivo trans.mp4 esté en la carpeta assets
+const localVideo = Asset.fromModule(require('../assets/trans.mp4')).uri;
 
 const Home = () => {
     const video = React.useRef(null);
@@ -13,9 +17,7 @@ const Home = () => {
             <Video
                 ref={video}
                 style={styles.video}
-                source={{
-                    uri: "https://videos.pexels.com/video-files/5377700/5377700-sd_540_960_25fps.mp4",
-                }}
+                source={{ uri: localVideo }}
                 resizeMode={ResizeMode.COVER}
                 shouldPlay
                 isLooping
@@ -23,7 +25,7 @@ const Home = () => {
             {/* Overlay with text and buttons */}
             <View style={styles.overlay}>
                 <Text style={styles.mainText}>Bienvenido a Soon</Text>
-                <Text style={styles.subText}>El mejor sistema de transportes de México</Text>
+                <Text style={styles.subText}>El mejor sistema de transportes de Tijuana</Text>
                 <View style={styles.buttons}>
                     <TouchableOpacity
                         style={styles.button}
