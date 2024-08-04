@@ -1,68 +1,63 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { useRouter } from "expo-router";
 
 const Settings = () => {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Settings</Text>
       <View style={styles.section}>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("../screens/Account")}
+        >
           <Icon name="user" size={24} color="#4caf50" />
           <Text style={styles.optionText}>Account</Text>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#999"
-            style={styles.optionIcon}
-          />
+          <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("../screens/Notifications")}
+        >
           <Icon name="bell" size={24} color="#ff9800" />
           <Text style={styles.optionText}>Notifications</Text>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#999"
-            style={styles.optionIcon}
-          />
+          <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("../screens/Privacy")}
+        >
           <Icon name="lock" size={24} color="#f44336" />
           <Text style={styles.optionText}>Privacy</Text>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#999"
-            style={styles.optionIcon}
-          />
+          <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("../screens/About")}
+        >
           <Icon name="info-circle" size={24} color="#3f51b5" />
           <Text style={styles.optionText}>About</Text>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#999"
-            style={styles.optionIcon}
-          />
+          <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+        
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => router.push("../screens/Logout")}
+        >
           <Icon name="sign-out" size={24} color="#e91e63" />
           <Text style={styles.optionText}>Logout</Text>
-          <Icon
-            name="angle-right"
-            size={24}
-            color="#999"
-            style={styles.optionIcon}
-          />
+          <Icon name="angle-right" size={24} color="#999" style={styles.optionIcon} />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
-export default Settings;
 
 const styles = StyleSheet.create({
   container: {
@@ -104,3 +99,5 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
 });
+
+export default Settings;

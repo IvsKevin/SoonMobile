@@ -13,8 +13,7 @@ import {
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "expo-router";
-import { useMutation } from "@tanstack/react-query";
-import { registerUser } from "../(services)/api/api";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importa el icono
 
 // Esquema de validación
 const RegisterSchema = Yup.object().shape({
@@ -25,21 +24,39 @@ const RegisterSchema = Yup.object().shape({
     .required("Requerido"),
 });
 
+// Función para registrar el usuario
+const registerUser = async (data) => {
+  const response = await fetch('https://soon-api.azurewebsites.net/api/user', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams(data).toString(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || 'Error al registrar usuario');
+  }
+
+  return response.json();
+};
+
 export default function Register() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
+  
+  // Estado para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [initialValues, setInitialValues] = useState({
-    email: "atom@gmail.com",
-    password: "123456",
-    confirmPassword: "123456",
-  });
-
-  const mutation = useMutation({
-    mutationFn: registerUser,
-    mutationKey: ["register"],
-  });
+  // Valores iniciales vacíos
+  const initialValues = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
 
   return (
     <KeyboardAvoidingView
@@ -48,38 +65,34 @@ export default function Register() {
     >
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Text style={styles.title}>Registro</Text>
-        {mutation?.isError ? (
-          <Text style={styles.errorText}>
-            {mutation?.error?.response?.data?.message}
-          </Text>
-        ) : null}
-        {mutation?.isSuccess ? (
-          <Text style={styles.successText}>
-            El registro fue exitoso
+        {message ? (
+          <Text style={messageType === "error" ? styles.errorText : styles.successText}>
+            {message}
           </Text>
         ) : null}
         <Formik
           initialValues={initialValues}
           validationSchema={RegisterSchema}
-          onSubmit={(values) => {
+          onSubmit={(values, { setSubmitting }) => {
             const data = {
               email: values.email,
               password: values.password,
+              type: 3,
             };
-            mutation
-              .mutateAsync(data)
+            registerUser(data)
               .then(() => {
                 setMessage("Registro completado!");
                 setMessageType("success");
                 setTimeout(() => {
                   setMessage("");
                   router.push("/(tabs)");
-                }, 1000); // Redirect after 1 seconds
+                }, 1000); // Redirect after 1 second
               })
               .catch((error) => {
-                setMessage(error?.response?.data?.message);
+                setMessage(error.message);
                 setMessageType("error");
-              });
+              })
+              .finally(() => setSubmitting(false));
           }}
         >
           {({
@@ -89,66 +102,75 @@ export default function Register() {
             values,
             errors,
             touched,
-            setFieldValue,
+            isSubmitting,
           }) => (
             <View style={styles.form}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={styles.label}>Correo Electrónico</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="example@axisdev.com"
                 onChangeText={handleChange("email")}
                 onBlur={handleBlur("email")}
                 value={values.email}
                 keyboardType="email-address"
-                onFocus={() => {
-                  if (values.email === initialValues.email) {
-                    setFieldValue("email", "");
-                  }
-                }}
               />
               {errors.email && touched.email ? (
                 <Text style={styles.errorText}>{errors.email}</Text>
               ) : null}
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-                secureTextEntry
-                onFocus={() => {
-                  if (values.password === initialValues.password) {
-                    setFieldValue("password", "");
-                  }
-                }}
-              />
+              <Text style={styles.label}>Contraseña</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Contraseña"
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Icon
+                    name={showPassword ? "eye" : "eye-off"}
+                    size={24}
+                    color="#2d6382" // Ajusta el color a tu gusto
+                  />
+                </TouchableOpacity>
+              </View>
               {errors.password && touched.password ? (
                 <Text style={styles.errorText}>{errors.password}</Text>
               ) : null}
-              <Text style={styles.label}>Confirm Password</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Confirm Password"
-                onChangeText={handleChange("confirmPassword")}
-                onBlur={handleBlur("confirmPassword")}
-                value={values.confirmPassword}
-                secureTextEntry
-                onFocus={() => {
-                  if (values.confirmPassword === initialValues.confirmPassword) {
-                    setFieldValue("confirmPassword", "");
-                  }
-                }}
-              />
+              <Text style={styles.label}>Confirma tu contraseña</Text>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirma tu contraseña"
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  value={values.confirmPassword}
+                  secureTextEntry={!showConfirmPassword}
+                />
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <Icon
+                    name={showConfirmPassword ? "eye" : "eye-off"}
+                    size={24}
+                    color="#2d6382" // Ajusta el color a tu gusto
+                  />
+                </TouchableOpacity>
+              </View>
               {errors.confirmPassword && touched.confirmPassword ? (
                 <Text style={styles.errorText}>{errors.confirmPassword}</Text>
               ) : null}
               <TouchableOpacity
                 style={styles.button}
                 onPress={handleSubmit}
-                disabled={mutation.isLoading}
+                disabled={isSubmitting}
               >
-                {mutation.isPending ? (
+                {isSubmitting ? (
                   <ActivityIndicator color="#fff" />
                 ) : (
                   <Text style={styles.buttonText}>Registrarme</Text>
@@ -200,7 +222,7 @@ const styles = StyleSheet.create({
     elevation: 4, // Para sombra en Android
   },
   label: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#2d6382", // Color medio para las etiquetas
     marginBottom: 8,
@@ -213,6 +235,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 16,
     backgroundColor: "#fff", // Fondo blanco para los inputs
+    flex: 1,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', // Alinea verticalmente los elementos
+    borderColor: "#6398b9", // Color claro para los bordes de los inputs
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    marginBottom: 16,
+    paddingRight: 1, // Espacio para el ícono
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    padding: 10,
+    top: 4,
   },
   errorText: {
     color: "red",

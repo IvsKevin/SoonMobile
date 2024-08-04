@@ -21,6 +21,7 @@ const Home = () => {
                 resizeMode={ResizeMode.COVER}
                 shouldPlay
                 isLooping
+                volume={0.0}
             />
             {/* Overlay with text and buttons */}
             <View style={styles.overlay}>

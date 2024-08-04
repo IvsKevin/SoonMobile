@@ -4,9 +4,9 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'expo-router';
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "../(services)/api/api";
+import { useDispatch } from "react-redux";
 import { loginUserAction } from '../(redux)/authSlice';
-import { useDispatch, useSelector } from "react-redux";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Esquema de validación
 const validationSchema = Yup.object({
@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
         .required('El correo electrónico es requerido')
         .label("Email"),
     password: Yup.string()
-        .min(6, 'La contraseña debe contener al menos 6 carácteres')
+        .min(6, 'La contraseña debe contener al menos 6 caracteres')
         .required('La contraseña es requerida')
         .label("Password"),
 });
@@ -25,21 +25,51 @@ export const options = {
     headerShown: false,
 };
 
+// Función para realizar el login
+const loginUser = async (credentials) => {
+    const params = new URLSearchParams();
+    params.append('email', credentials.email);
+    params.append('password', credentials.password);
+
+    const response = await fetch('https://soon-api.azurewebsites.net/api/User/Login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString(),
+    });
+
+    if (!response.ok) {
+        throw new Error('Error en el inicio de sesión');
+    }
+
+    const data = await response.json();
+    
+    console.log('Datos recibidos:', data);
+
+    if (data.status === 0 && data.user) {
+        return data;
+    } else {
+        throw new Error('Error: No se recibió la información del usuario');
+    }
+};
+
 const Login = () => {
     const router = useRouter();
     const dispatch = useDispatch();
+    const [showPassword, setShowPassword] = useState(false);
+
+    // Usa useMutation y maneja errores
     const mutation = useMutation({
         mutationFn: loginUser,
-        mutationKey: ['login'],
+        onSuccess: (data) => {
+            dispatch(loginUserAction(data.user));
+            router.push("/(tabs)");
+        },
+        onError: (error) => {
+            console.log("Error en el login:", error.message);
+        }
     });
-
-    const [initialValues, setInitialValues] = useState({
-        email: "ejemplo@gmail.com",
-        password: "ejemploContrase",
-    });
-
-    useSelector((state) => console.log("Store data", state));
-    console.log("mutation ", mutation);
 
     return (
         <KeyboardAvoidingView
@@ -49,26 +79,16 @@ const Login = () => {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.container}>
                     <Text style={styles.title}>Iniciar sesión</Text>
-                    {mutation?.isError && <Text style={styles.errorText}>
-                        {mutation?.error?.response?.data?.message}
+                    {mutation.isError && <Text style={styles.errorText}>
+                        {mutation.error.message}
                     </Text>}
-                    {mutation?.isSuccess && <Text style={styles.successText}>
+                    {mutation.isSuccess && <Text style={styles.successText}>
                         Inicio de sesión correctamente
                     </Text>}
                     <Formik
-                        initialValues={initialValues}
+                        initialValues={{ email: "", password: "" }}
                         onSubmit={(values) => {
-                            console.log(values);
-                            mutation
-                                .mutateAsync(values)
-                                .then((data) => {
-                                    console.log("Data ", data);
-                                    dispatch(loginUserAction(data));
-                                    router.push("/(tabs)");
-                                })
-                                .catch((err) => {
-                                    console.log("Error200: ", err);
-                                });
+                            mutation.mutate(values);
                         }}
                         validationSchema={validationSchema}
                     >
@@ -83,7 +103,7 @@ const Login = () => {
                                     value={values.email}
                                     keyboardType="email-address"
                                     onFocus={() => {
-                                        if (values.email === initialValues.email) {
+                                        if (values.email === "") {
                                             setFieldValue("email", "");
                                         }
                                     }}
@@ -92,24 +112,36 @@ const Login = () => {
                                     <Text style={styles.errorText}>{errors.email}</Text>
                                 ) : null}
                                 <Text style={styles.label}>Contraseña</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Contraseña"
-                                    onChangeText={handleChange("password")}
-                                    onBlur={handleBlur("password")}
-                                    value={values.password}
-                                    secureTextEntry
-                                    onFocus={() => {
-                                        if (values.password === initialValues.password) {
-                                            setFieldValue("password", "");
-                                        }
-                                    }}
-                                />
+                                <View style={styles.passwordContainer}>
+                                    <TextInput
+                                        style={styles.input}
+                                        placeholder="Contraseña"
+                                        onChangeText={handleChange("password")}
+                                        onBlur={handleBlur("password")}
+                                        value={values.password}
+                                        secureTextEntry={!showPassword}
+                                        onFocus={() => {
+                                            if (values.password === "") {
+                                                setFieldValue("password", "");
+                                            }
+                                        }}
+                                    />
+                                    <TouchableOpacity
+                                        style={styles.eyeIcon}
+                                        onPress={() => setShowPassword(!showPassword)}
+                                    >
+                                        <Icon
+                                            name={showPassword ? "eye" : "eye-off"}
+                                            size={24}
+                                            color="#2d6382" // Ajusta el color a tu gusto
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                                 {errors.password && touched.password ? (
                                     <Text style={styles.errorText}>{errors.password}</Text>
                                 ) : null}
                                 <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                                    {mutation?.isPending ? (<ActivityIndicator color="#fff" />) : (
+                                    {mutation.isLoading ? (<ActivityIndicator color="#fff" />) : (
                                         <Text style={styles.buttonText}>Iniciar sesión</Text>
                                     )}
                                 </TouchableOpacity>
@@ -138,39 +170,55 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5', // Fondo claro para contraste
+        backgroundColor: '#f5f5f5',
         padding: 16,
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: '#294a5f', // Color más oscuro para el título
+        color: '#294a5f',
         marginBottom: 24,
     },
     form: {
         width: '100%',
-        backgroundColor: '#fff', // Fondo blanco para el formulario
+        backgroundColor: '#fff',
         padding: 16,
         borderRadius: 8,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 8,
-        elevation: 4, // Para sombra en Android
+        elevation: 4,
     },
     label: {
         fontSize: 18,
-        color: '#2d6382', // Color medio para las etiquetas
+        color: '#2d6382',
         marginBottom: 8,
     },
     input: {
         height: 50,
-        borderColor: '#6398b9', // Color claro para los bordes de los inputs
+        borderColor: '#6398b9',
         borderWidth: 1,
         borderRadius: 8,
         paddingHorizontal: 16,
         marginBottom: 16,
-        backgroundColor: '#fff', // Fondo blanco para los inputs
+        backgroundColor: '#fff',
+        flex: 1,
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: "#6398b9",
+        borderRadius: 8,
+        backgroundColor: "#fff",
+        marginBottom: 16,
+        paddingRight: 1, 
+    },
+    eyeIcon: {
+        position: 'absolute',
+        right: 10,
+        padding: 10,
+        top: 4,
     },
     errorText: {
         color: 'red',
@@ -178,14 +226,14 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 50,
-        backgroundColor: '#2d6382', // Color medio para el botón
+        backgroundColor: '#2d6382',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 8,
         marginTop: 16,
     },
     buttonText: {
-        color: '#fff', // Texto blanco para contraste en el botón
+        color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
     },
@@ -203,7 +251,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     linkText: {
-        color: '#2d6382', // Color medio para los enlaces
+        color: '#2d6382',
         fontSize: 16,
         fontWeight: 'bold',
     },

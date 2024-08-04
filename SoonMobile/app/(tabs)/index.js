@@ -1,20 +1,40 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import * as React from 'react';
-import MapView, { Marker, Polyline } from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
-import { GOOGLE_MAPS_KEY } from "@env";
-// const carImage = require("../../assets/CarritoUber.jpg");
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import * as Location from 'expo-location';
+import MapView, { Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
+import {GOOGLE_MAPS_KEY} from "@env";
 
 const TabHome = () => {
-  const [origin, setOrigin] = React.useState({
-    latitude: 32.4581466,
-    longitude: -116.8697775,
-  });
-
-  const [destination, setDestination] = React.useState({
+  const [origin, setOrigin] = useState(null);
+  const [destination, setDestination] = useState({
     latitude: 32.460949,
     longitude: -116.8273082,
   });
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setOrigin({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })();
+  }, []);
+
+  if (!origin) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -38,18 +58,17 @@ const TabHome = () => {
       >
         <Marker
           draggable
-          onDragEnd={(direction) => setOrigin(direction.nativeEvent.coordinate)}
+          onDragEnd={(e) => setOrigin(e.nativeEvent.coordinate)}
           coordinate={origin}
-          // image={carImage}
           title="Mi ubicación actual"
           description="Esta es mi ubicación actual"
         />
         <Marker
           draggable
-          onDragEnd={(direction) => setDestination(direction.nativeEvent.coordinate)}
+          onDragEnd={(e) => setDestination(e.nativeEvent.coordinate)}
           coordinate={destination}
-          title="Mi ubicación actual"
-          description="Esta es mi ubicación actual"
+          title="Destino"
+          description="Este es el destino"
         />
         <MapViewDirections
           origin={origin}
@@ -58,11 +77,6 @@ const TabHome = () => {
           strokeColor="#000"
           strokeWidth={6}
         />
-        {/* <Polyline
-          coordinates={[origin, destination]}
-          strokeColor="#000"
-          strokeWidth={10}
-        /> */}
       </MapView>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Favoritos</Text>
