@@ -23,14 +23,6 @@ export default function RootLayout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="profile"
-                    options={{
-                        headerShown: false, title: "Perfil", tabBarIcon: ({ color }) => (
-                            <FontAwesome name="user" size={24} color={color} />
-                        )
-                    }}
-                />
-                <Tabs.Screen
                     name="settings"
                     options={{
                         headerShown: false, title: "Ajustes", tabBarIcon: ({ color }) => (
