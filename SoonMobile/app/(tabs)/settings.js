@@ -48,7 +48,7 @@ const Settings = () => {
         
         <TouchableOpacity
           style={styles.option}
-          onPress={() => router.push("../screens/Logout")}
+          onPress={() => router.push("../screens/logout")}
         >
           <Icon name="sign-out" size={24} color="#e91e63" />
           <Text style={styles.optionText}>Logout</Text>
