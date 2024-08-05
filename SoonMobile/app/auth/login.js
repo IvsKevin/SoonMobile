@@ -64,7 +64,14 @@ const Login = () => {
         mutationFn: loginUser,
         onSuccess: (data) => {
             dispatch(loginUserAction(data.user));
-            router.push("/(tabs)");
+            const { userType } = data.user;
+            if (userType === 1) {
+                router.push("/admin/home");
+            } else if (userType === 2) {
+                router.push("/employee/home");
+            } else {
+                router.push("/(tabs)");
+            }
         },
         onError: (error) => {
             console.log("Error en el login:", error.message);
