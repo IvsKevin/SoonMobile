@@ -1,19 +1,20 @@
+// Importa las dependencias necesarias
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import { StyleSheet, View, Text, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
-import {GOOGLE_MAPS_KEY} from "@env";
+import { GOOGLE_MAPS_KEY } from "@env";
+import { database } from '../../firebaseConfig'; // Importa tu configuración de Firebase
+import { ref, onValue, off } from 'firebase/database';
 
 const TabHome = () => {
   const [origin, setOrigin] = useState(null);
-  const [destination, setDestination] = useState({
-    latitude: 32.460949,
-    longitude: -116.8273082,
-  });
+  const [driverLocation, setDriverLocation] = useState(null);
+  const userId = 'chofer123'; // ID del chofer que quieres rastrear
 
   useEffect(() => {
-    (async () => {
+    const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         Alert.alert('Permission to access location was denied');
@@ -25,8 +26,30 @@ const TabHome = () => {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       });
-    })();
+    };
+
+    getLocation();
   }, []);
+
+  useEffect(() => {
+    const locationRef = ref(database, `locations/${userId}`);
+
+    const handleLocationUpdate = (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setDriverLocation({
+          latitude: data.latitude,
+          longitude: data.longitude,
+        });
+      }
+    };
+
+    onValue(locationRef, handleLocationUpdate);
+
+    return () => {
+      off(locationRef, handleLocationUpdate);
+    };
+  }, [userId]);
 
   if (!origin) {
     return (
@@ -38,15 +61,6 @@ const TabHome = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search"
-        />
-        <TouchableOpacity style={styles.locationButton}>
-          <Text style={styles.locationText}>📍</Text>
-        </TouchableOpacity>
-      </View>
       <MapView
         style={styles.map}
         region={{
@@ -56,37 +70,30 @@ const TabHome = () => {
           longitudeDelta: 0.0121,
         }}
       >
-        <Marker
-          draggable
-          onDragEnd={(e) => setOrigin(e.nativeEvent.coordinate)}
-          coordinate={origin}
-          title="Mi ubicación actual"
-          description="Esta es mi ubicación actual"
-        />
-        <Marker
-          draggable
-          onDragEnd={(e) => setDestination(e.nativeEvent.coordinate)}
-          coordinate={destination}
-          title="Destino"
-          description="Este es el destino"
-        />
-        <MapViewDirections
-          origin={origin}
-          destination={destination}
-          apikey={GOOGLE_MAPS_KEY}
-          strokeColor="#000"
-          strokeWidth={6}
-        />
+        {origin && (
+          <Marker
+            coordinate={origin}
+            title="Mi ubicación actual"
+            description="Esta es mi ubicación actual"
+          />
+        )}
+        {driverLocation && (
+          <Marker
+            coordinate={driverLocation}
+            title="Ubicación del chofer"
+            description="Esta es la ubicación actual del chofer"
+          />
+        )}
+        {origin && driverLocation && (
+          <MapViewDirections
+            origin={origin}
+            destination={driverLocation}
+            apikey={GOOGLE_MAPS_KEY}
+            strokeColor="#000"
+            strokeWidth={6}
+          />
+        )}
       </MapView>
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Favoritos</Text>
-        <View style={styles.favoriteItem}>
-          <Text style={styles.favoriteText}>Casa</Text>
-          <TouchableOpacity>
-            <Text style={styles.editText}>Pulse para editar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   );
 };
@@ -97,56 +104,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 2,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 10,
-  },
-  locationButton: {
-    marginLeft: 10,
-    padding: 10,
-    backgroundColor: '#eee',
-    borderRadius: 20,
-  },
-  locationText: {
-    fontSize: 20,
-  },
   map: {
     flex: 1,
-  },
-  footer: {
-    backgroundColor: '#fff',
-    padding: 10,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-  },
-  footerText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  favoriteItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#f9f9f9',
-  },
-  favoriteText: {
-    fontSize: 16,
-  },
-  editText: {
-    fontSize: 14,
-    color: '#007bff',
   },
 });

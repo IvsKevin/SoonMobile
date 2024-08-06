@@ -7,9 +7,10 @@ const loadUserFromStorage = async () => {
         const userInfo = await AsyncStorage.getItem("userInfo");
         return userInfo ? JSON.parse(userInfo) : null; // If there is no user info, return null
     } catch (error) {
+        console.error('Error loading user from storage:', error);
         return null;
     }
-};
+}
 
 // Initial state
 const initialState = {
@@ -25,23 +26,16 @@ const authSlice = createSlice({
         loginUserAction: (state, action) => {
             state.user = action.payload;
             state.isLoading = false;
-            AsyncStorage.setItem("userInfo", JSON.stringify(action.payload));
-            if (action.payload.code) {
-                AsyncStorage.setItem("userId", action.payload.code.toString());
-            }
-        },
-        logoutAction: (state, action) => {
-            state.isLoading = false;  // Reset isLoading state after logout action to false
+            AsyncStorage.setItem("userInfo", JSON.stringify(action.payload)); // Asegúrate de que action.payload contenga el id
+        },        
+        logoutAction: (state) => {
+            state.isLoading = false;
             state.user = null;
             AsyncStorage.removeItem("userInfo");
-            AsyncStorage.removeItem("userId");
         },
         setUserAction: (state, action) => {
             state.user = action.payload;
             state.isLoading = false;
-            if (action.payload.code) {
-                AsyncStorage.setItem("userId", action.payload.code.toString());
-            }
         }
     }
 });
@@ -55,5 +49,7 @@ export const loadUser = () => async (dispatch) => {
     const userInfo = await loadUserFromStorage();
     if (userInfo) {
         dispatch(setUserAction(userInfo));
+    } else {
+        console.error('No user info found in AsyncStorage');
     }
-};
+}

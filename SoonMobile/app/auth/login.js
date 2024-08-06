@@ -50,7 +50,7 @@ const loginUser = async (credentials) => {
     if (data.status === 0 && data.user) {
         return data;
     } else {
-        throw new Error('Error: No se recibió la información del usuario');
+        throw new Error('Error: No se encontró ninguna cuenta asociada con la información proporcionada.');
     }
 };
 
@@ -66,9 +66,9 @@ const Login = () => {
             dispatch(loginUserAction(data.user));
             const { userType } = data.user;
             if (userType === 1) {
-                router.push("/admin/home");
+                router.push("/adminApp/(tabs)");
             } else if (userType === 2) {
-                router.push("/employee/home");
+                router.push("/employee/(tabs)");
             } else {
                 router.push("/(tabs)");
             }

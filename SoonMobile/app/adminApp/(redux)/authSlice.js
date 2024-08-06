@@ -9,13 +9,14 @@ const loadUserFromStorage = async () => {
     } catch (error) {
         return null;
     }
-};
+}
 
 // Initial state
 const initialState = {
     user: null,
     isLoading: true,
 };
+
 
 // Slice
 const authSlice = createSlice({
@@ -26,22 +27,15 @@ const authSlice = createSlice({
             state.user = action.payload;
             state.isLoading = false;
             AsyncStorage.setItem("userInfo", JSON.stringify(action.payload));
-            if (action.payload.code) {
-                AsyncStorage.setItem("userId", action.payload.code.toString());
-            }
         },
         logoutAction: (state, action) => {
             state.isLoading = false;  // Reset isLoading state after logout action to false
             state.user = null;
             AsyncStorage.removeItem("userInfo");
-            AsyncStorage.removeItem("userId");
         },
         setUserAction: (state, action) => {
             state.user = action.payload;
             state.isLoading = false;
-            if (action.payload.code) {
-                AsyncStorage.setItem("userId", action.payload.code.toString());
-            }
         }
     }
 });
@@ -56,4 +50,4 @@ export const loadUser = () => async (dispatch) => {
     if (userInfo) {
         dispatch(setUserAction(userInfo));
     }
-};
+}
