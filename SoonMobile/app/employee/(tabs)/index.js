@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import { database } from '../../../firebaseConfig'; // Importa tu configuración de Firebase
+import { database } from '../../../firebaseConfig'; // Importar la configuración de Firebase
 import { ref, set } from 'firebase/database';
 
 // Importa la imagen del bus

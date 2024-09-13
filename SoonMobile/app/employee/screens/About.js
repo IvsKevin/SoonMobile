@@ -44,11 +44,10 @@ const About = () => {
       <Paragraph>
         Nuestro equipo está compuesto por profesionales apasionados y dedicados que trabajan incansablemente para hacer de Soon una aplicación de clase mundial.
       </Paragraph>
-      <Paragraph>• Luis Islas: Fundador y CEO. Lidera la visión y la dirección estratégica del proyecto.</Paragraph>
-      <Paragraph>• Natalia Islas: Jefa de Desarrollo. Responsable del diseño y desarrollo de las funcionalidades de la aplicación.</Paragraph>
-      <Paragraph>• Beatriz Islas: Gerente de Producto. Encargada de coordinar las necesidades del mercado con las capacidades del equipo de desarrollo.</Paragraph>
-      <Paragraph>• Juan Pérez: Ingeniero de Software. Especialista en backend y bases de datos.</Paragraph>
-      <Paragraph>• María López: Diseñadora UI/UX. Encargada del diseño de la interfaz y la experiencia del usuario.</Paragraph>
+      <Paragraph>• Brian Bautista: Fundador y CEO. Lidera la visión y la dirección estratégica del proyecto.</Paragraph>
+      <Paragraph>• Luis Islas: Jefa de Desarrollo. Responsable del diseño y desarrollo de las funcionalidades de la aplicación.</Paragraph>
+      <Paragraph>• Kevin Perdomo: Ingeniero de Software. Especialista en backend y bases de datos.</Paragraph>
+      <Paragraph>• Luis Islas: Diseñadora UI/UX. Encargada del diseño de la interfaz y la experiencia del usuario.</Paragraph>
       
       <SectionTitle>Versiones de la Aplicación</SectionTitle>
       <Paragraph>
